@@ -1,10 +1,20 @@
-export interface Machine {
-    id: string;
-    brand: string;
-    name: string;
-    type: string;
-    power: number;
-    weight: number;
-    deposit: number;
-    lease: number;
+import { Entity, PrimaryGeneratedColumn, Column } from "typeorm"
+
+export class Machine {
+    @PrimaryGeneratedColumn()
+    id: string | undefined;
+    @Column()
+    brand: string | undefined;
+    @Column()
+    name: string | undefined;
+    @Column()
+    type: string | undefined;
+    @Column()
+    power: number | undefined;
+    @Column()
+    weight: number | undefined;
+    @Column()
+    deposit: number | undefined;
+    @Column()
+    lease: number | undefined;
 }

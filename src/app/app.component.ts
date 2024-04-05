@@ -3,6 +3,7 @@ import { RouterOutlet } from '@angular/router';
 import { MachinesComponent } from './components/machines/machines.component';
 import { MatTableModule } from '@angular/material/table';
 import { MatPaginatorModule } from '@angular/material/paginator';
+import { NavbarComponent } from "./components/navbar/navbar.component";
 
 
 @Component({
@@ -10,7 +11,7 @@ import { MatPaginatorModule } from '@angular/material/paginator';
     standalone: true,
     templateUrl: './app.component.html',
     styleUrl: './app.component.css',
-    imports: [RouterOutlet, MachinesComponent, MatTableModule, MatPaginatorModule]
+    imports: [RouterOutlet, MachinesComponent, MatTableModule, MatPaginatorModule, NavbarComponent]
 })
 export class AppComponent {
 

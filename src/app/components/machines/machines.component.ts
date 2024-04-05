@@ -21,6 +21,10 @@ export class MachinesComponent implements AfterViewInit{
     return randomNumber.toString().padStart(6, '0');
   }
 
+  addNewData(){
+
+  }
+
   displayedColumns: string[] = ['id','brand', 'name', 'type', 'power', 'weight', 'deposit', 'lease'];
   dataSource: MatTableDataSource<Machine> = new MatTableDataSource<Machine>();
 

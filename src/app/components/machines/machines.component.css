@@ -1,5 +1,5 @@
-.demo-table {
-    width: 100%;
+.no-shadow {
+    box-shadow: none;
   }
   
   .mat-column-demo-position {

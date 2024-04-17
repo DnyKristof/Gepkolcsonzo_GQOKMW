@@ -1,5 +1,7 @@
-import { Entity, PrimaryGeneratedColumn, Column } from "typeorm"
+import { Entity, PrimaryGeneratedColumn, Column, ManyToMany, ManyToOne } from "typeorm"
+import { Company } from "./company.model";
 
+@Entity()
 export class Machine {
     @PrimaryGeneratedColumn()
     id: string | undefined;
@@ -17,4 +19,6 @@ export class Machine {
     deposit: number | undefined;
     @Column()
     lease: number | undefined;
+    @ManyToOne(() => Company, company => company.id)
+    company: Company | undefined;
 }

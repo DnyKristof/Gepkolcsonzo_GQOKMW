@@ -21,15 +21,11 @@ export class MachinesComponent implements AfterViewInit{
     return randomNumber.toString().padStart(6, '0');
   }
 
-  addNewData(){
-
-  }
 
   displayedColumns: string[] = ['id','brand', 'name', 'type', 'power', 'weight', 'deposit', 'lease'];
   dataSource: MatTableDataSource<Machine> = new MatTableDataSource<Machine>();
 
-
-
+  
 
   machines: Machine[] = [
     {
@@ -40,7 +36,8 @@ export class MachinesComponent implements AfterViewInit{
       power: 1000,
       weight: 500,
       deposit: 2000,
-      lease: 300
+      lease: 300,
+      company: undefined
     },
     {
       id: this.generateIndex(),
@@ -50,7 +47,8 @@ export class MachinesComponent implements AfterViewInit{
       power: 1500,
       weight: 600,
       deposit: 2500,
-      lease: 350
+      lease: 350,
+      company: undefined
     },
     {
       id: this.generateIndex(),
@@ -60,7 +58,8 @@ export class MachinesComponent implements AfterViewInit{
       power: 1200,
       weight: 550,
       deposit: 2200,
-      lease: 320
+      lease: 320,
+      company: undefined
     },
     {
       id: this.generateIndex(),
@@ -70,7 +69,8 @@ export class MachinesComponent implements AfterViewInit{
       power: 1100,
       weight: 480,
       deposit: 2100,
-      lease: 310
+      lease: 310,
+      company: undefined
     },
     {
       id: this.generateIndex(),
@@ -80,7 +80,8 @@ export class MachinesComponent implements AfterViewInit{
       power: 1250,
       weight: 700,
       deposit: 2300,
-      lease: 330
+      lease: 330,
+      company: undefined
     },
     {
       id: this.generateIndex(),
@@ -90,7 +91,8 @@ export class MachinesComponent implements AfterViewInit{
       power: 1350,
       weight: 800,
       deposit: 2700,
-      lease: 370
+      lease: 370,
+      company: undefined
     },
     {
       id: this.generateIndex(),
@@ -100,7 +102,8 @@ export class MachinesComponent implements AfterViewInit{
       power: 1400,
       weight: 900,
       deposit: 2600,
-      lease: 360
+      lease: 360,
+      company: undefined
     },
     {
       id: this.generateIndex(),
@@ -110,7 +113,8 @@ export class MachinesComponent implements AfterViewInit{
       power: 1600,
       weight: 950,
       deposit: 2800,
-      lease: 380
+      lease: 380,
+      company: undefined
     },
     {
       id: this.generateIndex(),
@@ -120,7 +124,8 @@ export class MachinesComponent implements AfterViewInit{
       power: 1700,
       weight: 1000,
       deposit: 2900,
-      lease: 390
+      lease: 390,
+      company: undefined
     },
     {
       id: this.generateIndex(),
@@ -130,7 +135,8 @@ export class MachinesComponent implements AfterViewInit{
       power: 1800,
       weight: 1100,
       deposit: 3000,
-      lease: 400
+      lease: 400,
+      company: undefined
     },
   ];
   

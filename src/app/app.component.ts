@@ -4,6 +4,8 @@ import { MachinesComponent } from './components/machines/machines.component';
 import { MatTableModule } from '@angular/material/table';
 import { MatPaginatorModule } from '@angular/material/paginator';
 import { NavbarComponent } from "./components/navbar/navbar.component";
+import { CompaniesComponent } from './components/companies/companies.component';
+import { RentalsComponent } from './components/rentals/rentals.component';
 
 
 @Component({
@@ -11,7 +13,9 @@ import { NavbarComponent } from "./components/navbar/navbar.component";
     standalone: true,
     templateUrl: './app.component.html',
     styleUrl: './app.component.css',
-    imports: [RouterOutlet, MachinesComponent, MatTableModule, MatPaginatorModule, NavbarComponent]
+    imports: [RouterOutlet, MachinesComponent, MatTableModule,
+              MatPaginatorModule, NavbarComponent,CompaniesComponent,
+              RentalsComponent]
 })
 export class AppComponent {
 

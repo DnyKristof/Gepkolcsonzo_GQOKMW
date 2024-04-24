@@ -3,7 +3,7 @@ import { Entity, PrimaryGeneratedColumn, Column } from "typeorm"
 @Entity()
 export class Transaction {
     @PrimaryGeneratedColumn()
-    id: string | undefined;
+    _id: string | undefined;
     @Column()
     start_date: Date | undefined;
     @Column()

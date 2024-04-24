@@ -2,7 +2,7 @@ import { Entity, PrimaryGeneratedColumn, Column, ManyToMany, ManyToOne } from "t
 
 export class Rental {
     @PrimaryGeneratedColumn()
-    id: string | undefined;
+    _id: string | undefined;
     @Column()
     start_date: Date | undefined;
     @Column()

@@ -4,7 +4,7 @@ import { Company } from "./company.model";
 @Entity()
 export class Machine {
     @PrimaryGeneratedColumn()
-    id: string | undefined;
+    _id: string | undefined;
     @Column()
     brand: string | undefined;
     @Column()
@@ -19,6 +19,6 @@ export class Machine {
     deposit: number | undefined;
     @Column()
     lease: number | undefined;
-    @ManyToOne(() => Company, company => company.id)
-    company: Company | undefined;
+    @ManyToOne(() => Company, company => company._id)
+    company: string | undefined;
 }

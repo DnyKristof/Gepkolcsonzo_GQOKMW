@@ -4,7 +4,7 @@ import { Machine } from "./machine.model";
 @Entity()
 export class Company {
     @PrimaryGeneratedColumn()
-    id: string | undefined;
+    _id: string | undefined;
     @Column()
     name: string | undefined;
     @Column()
@@ -18,6 +18,6 @@ export class Company {
     @Column()
     balance : number | undefined;
     @OneToMany(() => Machine, machine => machine.company)
-    machines: Machine[] | undefined;
+    machines: string[] | undefined;
 
 }

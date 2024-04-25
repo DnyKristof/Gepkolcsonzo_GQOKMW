@@ -11,11 +11,11 @@ import { MatPaginator, MatPaginatorModule } from '@angular/material/paginator';
   templateUrl: './machines.component.html',
   styleUrl: './machines.component.css'
 })
-export class MachinesComponent implements AfterViewInit{
+export class MachinesComponent implements AfterViewInit {
 
-  
+
   @ViewChild(MatPaginator) paginator!: MatPaginator;
-  
+
 
   generateIndex(): string {
     const randomNumber = Math.floor(Math.random() * 1000000);
@@ -23,26 +23,27 @@ export class MachinesComponent implements AfterViewInit{
   }
 
 
-  displayedColumns: string[] = ['_id','brand', 'name', 'type', 'power', 'weight', 'deposit', 'lease'];
+  displayedColumns: string[] = ['_id', 'brand', 'name', 'type', 'power', 'weight', 'deposit', 'lease'];
   dataSource: MatTableDataSource<Machine> = new MatTableDataSource<Machine>();
 
-  
+
 
   machines: Machine[] = [];
-  
 
-  constructor(private http: HttpClient) {}
+
+  constructor(private http: HttpClient) { }
 
   ngAfterViewInit() {
     this.fetchData();
   }
 
   fetchData() {
-    this.http.get<any[]>('http://localhost:3000/machine')
+    this.http.get<Machine[]>('http://localhost:3000/machine')
       .subscribe(data => {
         this.machines = data;
         this.dataSource.data = this.machines;
         this.dataSource.paginator = this.paginator;
+        console.log(this.machines);
       });
   }
 

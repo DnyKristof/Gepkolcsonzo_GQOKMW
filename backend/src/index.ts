@@ -1,9 +1,10 @@
 // src/index.js
 import express, { Express, Request, Response,NextFunction} from "express";
+import cors from "cors";
 import { Mongo } from "./mongo";
 import dotenv from "dotenv";
 import { MachineDTO, validateMachineDTO } from "./models/MachineDTO";
-import { CompanyDTO,validateCompanyDTO } from "./models/CompanyDTO";
+import { CompanyDTO,RegisterCompanyDTO,validateRegisterCompanyDTO } from "./models/CompanyDTO";
 import { RentalDTO,validateRentalDTO } from "./models/RentalDTO";
 import { TransactionDTO,validateTransactionDTO } from "./models/TransactionDTO";
 
@@ -11,6 +12,7 @@ dotenv.config();
 
 const app: Express = express();
 app.use(express.json());
+app.use(cors());
 const port = process.env.PORT;
 const MyMongoClient = new Mongo();
 
@@ -49,11 +51,30 @@ app.get("/company", async (req: Request, res: Response) => {
   }
 });
 
-app.post("/company",validateCompanyDTO, async (req: Request, res: Response) => {
+app.post("/company",validateRegisterCompanyDTO, async (req: Request, res: Response) => {
   try {
-    const companyData: CompanyDTO = req.body;
+    const companyData: RegisterCompanyDTO = req.body;
+    const startingBalance = 15000;
+    const companyToInsert: CompanyDTO = {
+      company_reg_number: companyData.company_reg_number,
+      headquarters: companyData.headquarters,
+      name: companyData.name,
+      representative: companyData.representative,
+      taxnumber: companyData.taxnumber,
+      balance: startingBalance,
+      machines: []
 
-    const insertedCompany = await MyMongoClient.insertCompany(companyData);
+    }
+
+    const insertedCompany = await MyMongoClient.insertCompany(companyToInsert);
+
+    const firstTransaction: TransactionDTO = {
+      start_date: new Date(),
+      end_date: new Date(),
+      amount: startingBalance,
+      company_id: insertedCompany.insertedId
+    };
+    const insertedTransaction = await MyMongoClient.insertTransaction(firstTransaction);
 
     console.log('Inserted company:', insertedCompany);
     res.status(201).json(insertedCompany);

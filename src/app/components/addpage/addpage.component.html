@@ -1,0 +1,9 @@
+<div class="login-container">
+    <h2>{{title}}</h2>
+    <div *ngFor="let field of inputFields" class="input-group">
+        <label [for]="field.id">{{ field.label }}:</label>
+        <input [type]="field.type" [id]="field.id" [name]="field.name" required>
+    </div>
+    
+    <button>Add</button>
+  </div>

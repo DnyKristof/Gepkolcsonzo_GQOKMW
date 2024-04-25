@@ -11,9 +11,18 @@ export interface CompanyDTO {
     machines: string[];
 }
 
-export function validateCompanyDTO(req: Request, res: Response, next: NextFunction) {
+export interface RegisterCompanyDTO {
+    name: string;
+    representative: string;
+    taxnumber: string;
+    company_reg_number: string;
+    headquarters: string;
+
+}
+
+export function validateRegisterCompanyDTO(req: Request, res: Response, next: NextFunction) {
     const companyData: CompanyDTO = req.body;
-    const requiredFields = ['name', 'representative', 'taxnumber', 'company_reg_number', 'headquarters', 'balance', 'machines'];
+    const requiredFields = ['name', 'representative', 'taxnumber', 'company_reg_number', 'headquarters',];
 
     for (const field of requiredFields) {
         if (!(field in companyData)) {

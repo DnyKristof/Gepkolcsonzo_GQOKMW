@@ -8,6 +8,12 @@ export interface RentalDTO {
     return_condition: boolean;
 }
 
+export interface NewRentalDTO {
+    start_date: Date;
+    company: string;
+    machine: string;
+}
+
 export function validateRentalDTO(req: Request, res: Response, next: NextFunction) {
     const rentalData: RentalDTO = req.body;
     const requiredFields = ['start_date', 'end_date', 'machine_id', 'return_condition'];

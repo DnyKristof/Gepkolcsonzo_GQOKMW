@@ -2,11 +2,13 @@ import { AfterViewInit, Component, ViewChild } from '@angular/core';
 import { MatTableDataSource, MatTableModule } from '@angular/material/table';
 import { MatPaginator, MatPaginatorModule } from '@angular/material/paginator';
 import { Company } from '../../models/company.model';
+import { HttpClient } from '@angular/common/http';
+import { RouterModule } from '@angular/router';
 
 @Component({
     selector: 'app-companies',
     standalone: true,
-    imports: [MatTableModule, MatPaginatorModule],
+    imports: [MatTableModule, MatPaginatorModule,RouterModule],
     templateUrl: './companies.component.html',
     styleUrl: './companies.component.css'
 })
@@ -23,8 +25,19 @@ export class CompaniesComponent implements AfterViewInit {
 
     companies: Company[] = [];
 
+    constructor(private http: HttpClient) { }
+
     ngAfterViewInit() {
-        this.dataSource.data = this.companies
-        this.dataSource.paginator = this.paginator;
+        this.fetchData();
+    }
+
+    fetchData() {
+        this.http.get<Company[]>('http://localhost:3000/company')
+            .subscribe(data => {
+                this.companies = data;
+                this.dataSource.data = this.companies;
+                this.dataSource.paginator = this.paginator;
+                console.log(this.companies);
+            });
     }
 }

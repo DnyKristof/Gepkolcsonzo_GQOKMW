@@ -1,11 +1,13 @@
 import { Component } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { HttpClient } from '@angular/common/http';
+import { RouterModule } from '@angular/router';
+import { env } from '../../../env';
 
 @Component({
   selector: 'app-addpage',
   standalone: true,
-  imports: [CommonModule],
+  imports: [CommonModule,RouterModule],
   templateUrl: './addpage.component.html',
   styleUrl: './addpage.component.css'
 })
@@ -14,6 +16,9 @@ export class AddpageComponent {
   title = ""
   inputFields: InputField[] = [];
   formData: any = {};
+  private apiUrl = env.apiUrl;
+  route = ''
+
 
   companyFields: InputField[] = [
     { label: 'Name', type: 'text', id: 'name', name: 'name' },
@@ -44,14 +49,17 @@ export class AddpageComponent {
     if (window.location.href.includes('company')) {
       this.inputFields = this.companyFields;
       this.title = "New Company"
+      this.route = 'companies'
     }
     if (window.location.href.includes('machine')) {
       this.inputFields = this.machineFields;
       this.title = "New Machine"
+      this.route = 'machines'
     }
     if (window.location.href.includes('rental')) {
       this.inputFields = this.rentalFields;
       this.title = "New Rental"
+      this.route = 'rentals'
     }
   }
   
@@ -71,15 +79,17 @@ export class AddpageComponent {
       this.formData[field.name] = (document.getElementById(field.id) as HTMLInputElement).value;
     });
 
-    this.http.post('your-backend-url', this.formData)
+    this.http.post(`${this.apiUrl}/machine`, this.formData)
       .subscribe(
         response => {
+          window.location.replace(`/${this.route}`)
           console.log('Success:', response);
         },
         error => {
           console.error('Error:', error);
         }
       );
+      
   }
 }
 

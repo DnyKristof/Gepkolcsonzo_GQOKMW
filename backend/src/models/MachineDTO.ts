@@ -14,7 +14,7 @@ export interface MachineDTO {
 
 export function validateMachineDTO(req: Request, res: Response, next: NextFunction) {
     const machineData: MachineDTO = req.body;
-    const requiredFields = ['brand', 'name', 'type', 'power', 'weight', 'deposit', 'lease', 'company'];
+    const requiredFields = ['brand', 'name', 'type', 'power', 'weight', 'deposit', 'lease'];
   
     for (const field of requiredFields) {
       if (!(field in machineData)) {

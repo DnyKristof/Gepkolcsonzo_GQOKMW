@@ -1,5 +1,6 @@
 import { Component } from '@angular/core';
 import { CommonModule } from '@angular/common';
+import { HttpClient } from '@angular/common/http';
 
 @Component({
   selector: 'app-addpage',
@@ -10,17 +11,18 @@ import { CommonModule } from '@angular/common';
 })
 export class AddpageComponent {
 
-  title =""
-  inputFields : InputField[] = [];
+  title = ""
+  inputFields: InputField[] = [];
+  formData: any = {};
 
-  companyFields : InputField[] = [
+  companyFields: InputField[] = [
     { label: 'Name', type: 'text', id: 'name', name: 'name' },
     { label: 'Representative', type: 'text', id: 'representative', name: 'representative' },
     { label: 'Tax Number', type: 'text', id: 'taxnumber', name: 'taxnumber' },
     { label: 'Company Registration Number', type: 'text', id: 'company_reg_number', name: 'company_reg_number' },
     { label: 'Headquarters', type: 'text', id: 'headquarters', name: 'headquarters' },
   ];
-  machineFields : InputField[] = [
+  machineFields: InputField[] = [
     { label: 'Brand', type: 'text', id: 'brand', name: 'brand' },
     { label: 'Name', type: 'text', id: 'name', name: 'name' },
     { label: 'Type', type: 'text', id: 'type', name: 'type' },
@@ -29,14 +31,14 @@ export class AddpageComponent {
     { label: 'Deposit', type: 'text', id: 'deposit', name: 'deposit' },
     { label: 'Lease', type: 'text', id: 'lease', name: 'lease' },
   ];
-  rentalFields : InputField[] = [
+  rentalFields: InputField[] = [
     { label: 'Company', type: 'text', id: 'company', name: 'company' },
     { label: 'Machine', type: 'text', id: 'machine', name: 'machine' },
     { label: 'Start Date', type: 'text', id: 'start_date', name: 'start_date' },
   ];
 
-  
-  constructor() { }
+
+  constructor(private http: HttpClient) { }
 
   ngOnInit(): void {
     if (window.location.href.includes('company')) {
@@ -52,7 +54,33 @@ export class AddpageComponent {
       this.title = "New Rental"
     }
   }
+  
+  addItem(): void {
+    const isEmptyField = this.inputFields.some(field => {
+      const value = (document.getElementById(field.id) as HTMLInputElement).value;
+      return !value.trim();
+    });
 
+    if (isEmptyField) {
+      console.error('Please fill in all fields.');
+      return;
+    }
+
+    this.formData = {};
+    this.inputFields.forEach(field => {
+      this.formData[field.name] = (document.getElementById(field.id) as HTMLInputElement).value;
+    });
+
+    this.http.post('your-backend-url', this.formData)
+      .subscribe(
+        response => {
+          console.log('Success:', response);
+        },
+        error => {
+          console.error('Error:', error);
+        }
+      );
+  }
 }
 
 interface InputField {

@@ -3,11 +3,12 @@ import { Machine } from '../../models/machine.model';
 import { HttpClient } from '@angular/common/http';
 import { MatTableDataSource, MatTableModule } from '@angular/material/table';
 import { MatPaginator, MatPaginatorModule } from '@angular/material/paginator';
+import { RouterModule } from '@angular/router';
 
 @Component({
   selector: 'app-machines',
   standalone: true,
-  imports: [MatTableModule, MatPaginatorModule],
+  imports: [MatTableModule, MatPaginatorModule,RouterModule],
   templateUrl: './machines.component.html',
   styleUrl: './machines.component.css'
 })
@@ -16,14 +17,7 @@ export class MachinesComponent implements AfterViewInit {
 
   @ViewChild(MatPaginator) paginator!: MatPaginator;
 
-
-  generateIndex(): string {
-    const randomNumber = Math.floor(Math.random() * 1000000);
-    return randomNumber.toString().padStart(6, '0');
-  }
-
-
-  displayedColumns: string[] = ['_id', 'brand', 'name', 'type', 'power', 'weight', 'deposit', 'lease'];
+  displayedColumns: string[] = ['_id', 'brand', 'name', 'type', 'power', 'weight', 'deposit', 'lease','company'];
   dataSource: MatTableDataSource<Machine> = new MatTableDataSource<Machine>();
 
 

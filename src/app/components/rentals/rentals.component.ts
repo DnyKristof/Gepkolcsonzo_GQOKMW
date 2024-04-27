@@ -3,11 +3,12 @@ import { Rental } from '../../models/rental.model';
 import { MatTableDataSource, MatTableModule } from '@angular/material/table';
 import { MatPaginator, MatPaginatorModule } from '@angular/material/paginator';
 import { DatePipe } from '@angular/common';
+import { RouterModule } from '@angular/router';
 
 @Component({
   selector: 'app-rentals',
   standalone: true,
-  imports: [MatTableModule, MatPaginatorModule,DatePipe],
+  imports: [MatTableModule, MatPaginatorModule,DatePipe,RouterModule],
   templateUrl: './rentals.component.html',
   styleUrl: './rentals.component.css'
 })

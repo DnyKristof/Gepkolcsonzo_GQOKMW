@@ -8,7 +8,7 @@ export class Rental {
     @Column()
     end_date: Date | undefined;
     @Column()
-    machine_id: string | undefined;
+    machine: string | undefined;
     @Column()
     company :string | undefined;
     @Column()

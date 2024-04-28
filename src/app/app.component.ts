@@ -7,6 +7,7 @@ import { NavbarComponent } from "./components/navbar/navbar.component";
 import { CompaniesComponent } from './components/companies/companies.component';
 import { RentalsComponent } from './components/rentals/rentals.component';
 import { AddpageComponent } from './components/addpage/addpage.component';
+import { DetailsComponent } from './components/details/details.component';
 import { HttpClientModule } from '@angular/common/http';
 
 
@@ -18,7 +19,7 @@ import { HttpClientModule } from '@angular/common/http';
     styleUrl: './app.component.css',
     imports: [RouterOutlet, MachinesComponent, MatTableModule,
               MatPaginatorModule, NavbarComponent,CompaniesComponent,
-              RentalsComponent,AddpageComponent,HttpClientModule]
+              RentalsComponent,AddpageComponent,DetailsComponent,HttpClientModule]
 })
 export class AppComponent {
 

@@ -4,56 +4,55 @@
 
         <ng-container matColumnDef="_id">
             <th mat-header-cell *matHeaderCellDef> Index </th>
-            <td mat-cell *matCellDef="let element"> {{element._id}} </td>
+            <td class="clickable"  class="clickable" mat-cell *matCellDef="let element" routerLink={{element._id}}> {{element._id}} </td>
         </ng-container>
 
 
         <ng-container matColumnDef="name">
             <th mat-header-cell *matHeaderCellDef> Name </th>
-            <td mat-cell *matCellDef="let element"> {{element.name}} </td>
+            <td class="clickable"  mat-cell *matCellDef="let element" routerLink={{element._id}}> {{element.name}} </td>
         </ng-container>
 
 
         <ng-container matColumnDef="representative">
             <th mat-header-cell *matHeaderCellDef> Representative</th>
-            <td mat-cell *matCellDef="let element"> {{element.representative}} </td>
+            <td class="clickable"  mat-cell *matCellDef="let element" routerLink={{element._id}}> {{element.representative}} </td>
         </ng-container>
 
 
         <ng-container matColumnDef="taxnumber">
             <th mat-header-cell *matHeaderCellDef> Tax number </th>
-            <td mat-cell *matCellDef="let element"> {{element.taxnumber}} </td>
+            <td class="clickable"  mat-cell *matCellDef="let element" routerLink={{element._id}}> {{element.taxnumber}} </td>
         </ng-container>
 
 
         <ng-container matColumnDef="company_reg_number">
             <th mat-header-cell *matHeaderCellDef> Company Registration Number </th>
-            <td mat-cell *matCellDef="let element"> {{element.company_reg_number}} </td>
+            <td class="clickable"  mat-cell *matCellDef="let element" routerLink={{element._id}}> {{element.company_reg_number}} </td>
         </ng-container>
 
- 
+
         <ng-container matColumnDef="headquarters">
             <th mat-header-cell *matHeaderCellDef> Headquarters </th>
-            <td mat-cell *matCellDef="let element"> {{element.headquarters}} </td>
+            <td class="clickable"  mat-cell *matCellDef="let element" routerLink={{element._id}}> {{element.headquarters}} </td>
         </ng-container>
-
 
         <ng-container matColumnDef="balance">
             <th mat-header-cell *matHeaderCellDef> Balance </th>
-            <td mat-cell *matCellDef="let element"> {{element.balance}} </td>
+            <td class="clickable"  mat-cell *matCellDef="let element" routerLink={{element._id}}> {{element.balance}} </td>
         </ng-container>
 
-        
-        
+
+
+
 
         <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
         <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
-        
+
     </table>
-    <img src="assets/plus-circle.svg" class="add-button" routerLink="/addpage/company"/>
-    
-    
-    <mat-paginator [pageSizeOptions]="[5,   10, 20,50]" showFirstLastButtons 
-        [length]="dataSource.data.length">
+    <img src="assets/plus-circle.svg" class="add-button" routerLink="/addpage/company" />
+
+
+    <mat-paginator [pageSizeOptions]="[5,   10, 20,50]" showFirstLastButtons [length]="dataSource.data.length">
     </mat-paginator>
 </div>

@@ -16,4 +16,7 @@ h1{
   text-align: center;
 }
 
+.clickable{
+  cursor: pointer;
+}
   

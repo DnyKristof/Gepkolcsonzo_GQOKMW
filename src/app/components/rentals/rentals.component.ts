@@ -4,6 +4,7 @@ import { MatTableDataSource, MatTableModule } from '@angular/material/table';
 import { MatPaginator, MatPaginatorModule } from '@angular/material/paginator';
 import { DatePipe } from '@angular/common';
 import { RouterModule } from '@angular/router';
+import { HttpClient } from '@angular/common/http';
 
 @Component({
   selector: 'app-rentals',
@@ -36,13 +37,24 @@ export class RentalsComponent implements AfterViewInit{
 
 
 
-  displayedColumns: string[] = ['_id','start_date', 'end_date', 'machine_id', 'return_condition'];
+  displayedColumns: string[] = ['_id','start_date', 'end_date', 'machine', 'company' , 'return_condition'];
   dataSource: MatTableDataSource<Rental> = new MatTableDataSource<Rental>();
 
   rentals: Rental[] = [];
 
+  constructor(private http: HttpClient) { }
+
   ngAfterViewInit() {
-    this.dataSource.data = this.rentals
-    this.dataSource.paginator = this.paginator;
+    this.fetchData();
+  }
+
+  fetchData() {
+    this.http.get<Rental[]>('http://localhost:3000/rental')
+      .subscribe(data => {
+        this.rentals = data;
+        this.dataSource.data = this.rentals;
+        this.dataSource.paginator = this.paginator;
+        console.log(this.rentals);
+      });
   }
 }

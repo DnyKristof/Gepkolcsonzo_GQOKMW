@@ -18,6 +18,7 @@ export class AddpageComponent {
   formData: any = {};
   private apiUrl = env.apiUrl;
   route = ''
+  api = ""
 
 
   companyFields: InputField[] = [
@@ -50,16 +51,19 @@ export class AddpageComponent {
       this.inputFields = this.companyFields;
       this.title = "New Company"
       this.route = 'companies'
+      this.api = 'company'
     }
     if (window.location.href.includes('machine')) {
       this.inputFields = this.machineFields;
       this.title = "New Machine"
       this.route = 'machines'
+      this.api = 'machine'
     }
     if (window.location.href.includes('rental')) {
       this.inputFields = this.rentalFields;
       this.title = "New Rental"
       this.route = 'rentals'
+      this.api = 'rental'
     }
   }
   
@@ -79,7 +83,7 @@ export class AddpageComponent {
       this.formData[field.name] = (document.getElementById(field.id) as HTMLInputElement).value;
     });
 
-    this.http.post(`${this.apiUrl}/machine`, this.formData)
+    this.http.post(`${this.apiUrl}/${this.api}`, this.formData)
       .subscribe(
         response => {
           window.location.replace(`/${this.route}`)

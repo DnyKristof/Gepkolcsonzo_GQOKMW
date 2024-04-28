@@ -1,0 +1,19 @@
+<div class="container">
+    <div class="rental-details">
+        <h1>{{rental?._id}}</h1>
+        <button (click)="toggleEndMode()" *ngIf="!rental.end_date">End Rental</button>
+        <p><strong>Start Date: </strong> {{rental?.start_date}}</p>
+        <p><strong>End Date:</strong> {{rental?.end_date}}</p>
+        <p><strong>Machine Name:</strong> {{rental?.machine}}</p>
+        <p><strong>Machine Id:</strong> {{rental?.machine_id}}</p>
+        <p><strong>Company Name:</strong> {{rental?.company}}</p>
+        <p><strong>Company Id:</strong> {{rental?.company_id}}</p>
+        <p><strong>Return Condition:</strong> {{rental?.return_condition}}</p>
+
+        <div *ngIf="endMode">
+            <p><strong>Return condition:</strong></p>
+            <button (click)="goodReturnCondition()">Good</button>
+            <button (click)="badReturnCondition()">Bad</button>
+        </div>
+    </div>
+</div>

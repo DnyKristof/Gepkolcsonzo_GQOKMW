@@ -6,6 +6,12 @@ export interface TransactionDTO {
     end_date: Date;
     amount: number;
     company_id: string;
+    type: TransactionType;
+}
+
+export enum TransactionType {
+    CASH_IN = 'Payment',
+    CASH_OUT = 'Rented Machine'
 }
 
 export function validateTransactionDTO(req: Request, res: Response, next: NextFunction) {

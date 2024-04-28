@@ -10,4 +10,6 @@ export class Transaction {
     end_date: Date | undefined;
     @Column()
     amount: number | undefined;
+    @Column()
+    company_id: string | undefined;
 }

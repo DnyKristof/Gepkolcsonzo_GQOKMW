@@ -4,6 +4,7 @@ import { HttpClient } from '@angular/common/http';
 import { MatTableDataSource, MatTableModule } from '@angular/material/table';
 import { MatPaginator, MatPaginatorModule } from '@angular/material/paginator';
 import { RouterModule } from '@angular/router';
+import { env } from '../../../env';
 
 @Component({
   selector: 'app-machines',
@@ -13,7 +14,7 @@ import { RouterModule } from '@angular/router';
   styleUrl: './machines.component.css'
 })
 export class MachinesComponent implements AfterViewInit {
-
+  private apiUrl = env.apiUrl;
 
   @ViewChild(MatPaginator) paginator!: MatPaginator;
 
@@ -32,7 +33,7 @@ export class MachinesComponent implements AfterViewInit {
   }
 
   fetchData() {
-    this.http.get<Machine[]>('http://localhost:3000/machine')
+    this.http.get<Machine[]>(`${this.apiUrl}/machine`)
       .subscribe(data => {
         this.machines = data;
         this.dataSource.data = this.machines;

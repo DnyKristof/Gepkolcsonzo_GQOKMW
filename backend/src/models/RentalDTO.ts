@@ -3,20 +3,28 @@ import express, { Request, Response, NextFunction } from 'express';
 export interface RentalDTO {
     _id?: string;
     start_date: Date;
-    end_date: Date;
+    end_date: Date | null;
     machine: string;
-    return_condition: boolean;
+    machine_id: string;
+    company: string;
+    company_id: string;
+    return_condition: boolean | null;
 }
 
 export interface NewRentalDTO {
-    start_date: Date;
-    company: string;
-    machine: string;
+    company_id: string;
+    machine_id: string;
 }
 
-export function validateRentalDTO(req: Request, res: Response, next: NextFunction) {
+export interface EndRentalDTO {
+    company_id: string;
+    machine_id: string;
+    return_condition: boolean;
+}
+
+export function validateNewRentalDTO(req: Request, res: Response, next: NextFunction) {
     const rentalData: RentalDTO = req.body;
-    const requiredFields = ['start_date', 'machine', 'company'];
+    const requiredFields = [ 'machine_id', 'company_id'];
 
     for (const field of requiredFields) {
         if (!(field in rentalData)) {

@@ -10,7 +10,11 @@ export class Rental {
     @Column()
     machine: string | undefined;
     @Column()
+    machine_id: string | undefined;
+    @Column()
     company :string | undefined;
+    @Column()
+    company_id: string | undefined;
     @Column()
     return_condition: boolean | undefined;
 

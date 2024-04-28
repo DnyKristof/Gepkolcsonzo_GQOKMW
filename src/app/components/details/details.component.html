@@ -1,12 +1,55 @@
-<!-- detailspage.component.html -->
-
 <div class="container">
-    <div class="company-details">
-      <h1>asd</h1>
-      <p><strong>Representative:</strong> asd</p>
-      <p><strong>Tax Number:</strong> asd</p>
-      <p><strong>Company Registration Number:</strong>asd</p>
-      <p><strong>Headquarters:</strong>asd</p>
+  <div class="company-details">
+      <h1>{{company?._id}}</h1>
+      <button (click)="toggleEditMode()">Edit</button>
+      <button (click)="toggleAddBalance()">Add balance</button>
+
+      <div *ngIf="addBalanceMode">
+        <input type="number" [(ngModel)]="this.balanceFormData.amount" placeholder="Amount">
+        <button (click)="addBalance()">Add Balance</button>
+      </div>
+
+      <p><strong>Name: </strong> {{company?.name}}</p>
+      <p><strong>Representative:</strong> {{company?.representative}}</p>
+      <p><strong>Tax Number:</strong> {{company?.taxnumber}}</p>
+      <p><strong>Company Registration Number:</strong> {{company?.company_reg_number}}</p>
+      <p><strong>Headquarters:</strong> {{company?.headquarters}}</p>
+      <p><strong>Balance:</strong> {{company?.balance}}</p>
+
+      <div *ngIf="editMode">
+        <input type="text" [(ngModel)]="this.formData.name" placeholder="Name">
+        <input type="text" [(ngModel)]="this.formData.representative" placeholder="Representative">
+        <input type="text" [(ngModel)]="this.formData.taxnumber" placeholder="Tax Number">
+        <input type="text" [(ngModel)]="this.formData.company_reg_number" placeholder="Company Registration Number">
+        <input type="text" [(ngModel)]="this.formData.headquarters" placeholder="Headquarters">
+        <button (click)="saveChanges()">Save Changes</button>
+      </div>
+      <div *ngIf="company?.machines">
+          <h2>Machines:</h2>
+          <ul>
+              <li *ngFor="let machine of company?.machines">
+                  {{ machine }}
+              </li>
+          </ul>
+      </div>
+
+      <div>
+        <label for="startDate">Start Date:</label>
+        <input type="date" id="startDate" [(ngModel)]="startDate">
+        <label for="endDate">End Date:</label>
+        <input type="date" id="endDate" [(ngModel)]="endDate">
+        <button (click)="filterTransactions()">Filter</button>
+        <button (click)="resetFilter()">Reset</button>
+      </div>
+
+      <div *ngIf="this.filteredTransactions">
+        <h2>Transactions:</h2>
+        <ul>
+            <li *ngFor="let transacion of this.filteredTransactions">
+                Id:{{ transacion._id }}<br/>Start Date: {{ transacion.start_date }}<br/>End Date: {{ transacion.end_date}}<br/> Amount: {{ transacion.amount }},
+            </li>
+        </ul>
     </div>
+    
   </div>
-  
+</div>

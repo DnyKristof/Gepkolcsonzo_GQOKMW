@@ -5,6 +5,7 @@ import { MatPaginator, MatPaginatorModule } from '@angular/material/paginator';
 import { DatePipe } from '@angular/common';
 import { RouterModule } from '@angular/router';
 import { HttpClient } from '@angular/common/http';
+import { env } from '../../../env';
 
 @Component({
   selector: 'app-rentals',
@@ -14,7 +15,7 @@ import { HttpClient } from '@angular/common/http';
   styleUrl: './rentals.component.css'
 })
 export class RentalsComponent implements AfterViewInit{
-
+  private apiUrl = env.apiUrl;
   
   @ViewChild(MatPaginator) paginator!: MatPaginator;
   
@@ -49,7 +50,7 @@ export class RentalsComponent implements AfterViewInit{
   }
 
   fetchData() {
-    this.http.get<Rental[]>('http://localhost:3000/rental')
+    this.http.get<Rental[]>(`${this.apiUrl}/rental`)
       .subscribe(data => {
         this.rentals = data;
         this.dataSource.data = this.rentals;
@@ -57,4 +58,5 @@ export class RentalsComponent implements AfterViewInit{
         console.log(this.rentals);
       });
   }
+  
 }

@@ -4,6 +4,7 @@ import { MatPaginator, MatPaginatorModule } from '@angular/material/paginator';
 import { Company } from '../../models/company.model';
 import { HttpClient } from '@angular/common/http';
 import { RouterModule } from '@angular/router';
+import { env } from '../../../env';
 
 @Component({
     selector: 'app-companies',
@@ -13,6 +14,7 @@ import { RouterModule } from '@angular/router';
     styleUrl: './companies.component.css'
 })
 export class CompaniesComponent implements AfterViewInit {
+    private apiUrl = env.apiUrl;
     @ViewChild(MatPaginator) paginator!: MatPaginator;
 
     generateIndex(): string {
@@ -32,7 +34,7 @@ export class CompaniesComponent implements AfterViewInit {
     }
 
     fetchData() {
-        this.http.get<Company[]>('http://localhost:3000/company')
+        this.http.get<Company[]>(`${this.apiUrl}/company`)
             .subscribe(data => {
                 this.companies = data;
                 this.dataSource.data = this.companies;

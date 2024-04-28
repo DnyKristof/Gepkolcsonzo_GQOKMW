@@ -38,9 +38,8 @@ export class AddpageComponent {
     { label: 'Lease', type: 'text', id: 'lease', name: 'lease' },
   ];
   rentalFields: InputField[] = [
-    { label: 'Company', type: 'text', id: 'company', name: 'company' },
-    { label: 'Machine', type: 'text', id: 'machine', name: 'machine' },
-    { label: 'Start Date', type: 'text', id: 'start_date', name: 'start_date' },
+    { label: 'Company', type: 'text', id: 'company_id', name: 'company_id' },
+    { label: 'Machine', type: 'text', id: 'machine_id', name: 'machine_id' },
   ];
 
 

@@ -4,9 +4,9 @@ import cors from "cors";
 import { Mongo } from "./mongo";
 import dotenv from "dotenv";
 import { MachineDTO, validateMachineDTO } from "./models/MachineDTO";
-import { CompanyDTO,RegisterCompanyDTO,validateRegisterCompanyDTO } from "./models/CompanyDTO";
-import { RentalDTO,validateRentalDTO } from "./models/RentalDTO";
-import { TransactionDTO,validateTransactionDTO } from "./models/TransactionDTO";
+import { CompanyDTO,RegisterCompanyDTO,UpdateCompanyDTO,validateRegisterCompanyDTO } from "./models/CompanyDTO";
+import { NewRentalDTO, RentalDTO,validateNewRentalDTO } from "./models/RentalDTO";
+import { TransactionDTO,TransactionType,validateTransactionDTO } from "./models/TransactionDTO";
 
 dotenv.config();
 
@@ -51,6 +51,21 @@ app.get("/company", async (req: Request, res: Response) => {
   }
 });
 
+app.get("/company/:id", async (req: Request, res: Response) => {
+  try {
+    const id = req.params.id;
+    const company: CompanyDTO | null = await MyMongoClient.getCompanyById(id);
+    if (!company) {
+      res.status(404).json({ error: 'Company not found' });
+      return;
+    }
+    res.json(company);
+  } catch (error) {
+    console.error('Error fetching company:', error);
+    res.status(500).json({ error: 'Failed to fetch company' });
+  }
+});
+
 app.post("/company",validateRegisterCompanyDTO, async (req: Request, res: Response) => {
   try {
     const companyData: RegisterCompanyDTO = req.body;
@@ -61,7 +76,7 @@ app.post("/company",validateRegisterCompanyDTO, async (req: Request, res: Respon
       name: companyData.name,
       representative: companyData.representative,
       taxnumber: companyData.taxnumber,
-      balance: startingBalance,
+      balance: 0,
       machines: []
 
     }
@@ -72,7 +87,8 @@ app.post("/company",validateRegisterCompanyDTO, async (req: Request, res: Respon
       start_date: new Date(),
       end_date: new Date(),
       amount: startingBalance,
-      company_id: insertedCompany.insertedId
+      company_id: insertedCompany.insertedId,
+      type: TransactionType.CASH_IN
     };
     const insertedTransaction = await MyMongoClient.insertTransaction(firstTransaction);
 
@@ -84,6 +100,25 @@ app.post("/company",validateRegisterCompanyDTO, async (req: Request, res: Respon
   }
 });
 
+app.put("/company/:id",validateRegisterCompanyDTO, async (req: Request, res: Response) => {
+  try {
+    const id = req.params.id;
+    const companyData: UpdateCompanyDTO = req.body;
+
+    const updated = await MyMongoClient.updateCompany(companyData, id);
+    if (!updated) {
+      res.status(404).json({ error: 'Company not found' });
+      return;
+    }
+
+    res.json({ message: 'Company updated' });
+  } catch (error) {
+    console.error('Error updating company:', error);
+    res.status(500).json({ error: 'Failed to update company' });
+  }
+});
+
+
 app.get("/rental", async (req: Request, res: Response) => {
   try {
     const rentals: RentalDTO[] = await MyMongoClient.getAllRentals();
@@ -94,16 +129,128 @@ app.get("/rental", async (req: Request, res: Response) => {
   }
 });
 
-app.post("/rental",validateRentalDTO, async (req: Request, res: Response) => {
+app.get("/rental/:id", async (req: Request, res: Response) => {
   try {
-    const rentalData: RentalDTO = req.body;
+    const id = req.params.id;
+    const rental: RentalDTO | null = await MyMongoClient.getRentalById(id);
+    if (!rental) {
+      res.status(404).json({ error: 'Rental not found' });
+      return;
+    }
+    res.json(rental);
+  } catch (error) {
+    console.error('Error fetching rental:', error);
+    res.status(500).json({ error: 'Failed to fetch rental' });
+  }
+});
 
-    const insertedRental = await MyMongoClient.insertRental(rentalData);
+app.post("/rental",validateNewRentalDTO, async (req: Request, res: Response) => {
+  try {
+    const rentalData: NewRentalDTO = req.body;
+    const machine = await MyMongoClient.getMachineById(rentalData.machine_id);
+    if (!machine) {
+      res.status(404).json({ error: 'Machine not found' });
+      return;
+    }
+    const company = await MyMongoClient.getCompanyById(rentalData.company_id);
+    if (!company) {
+      res.status(404).json({ error: 'Company not found' });
+      return;
+    }
+    if(company.balance < -50000){
+      res.status(400).json({ error: 'Company is in debt' });
+      return;
+    }
+
+    const rental: RentalDTO = {
+      start_date: new Date(),
+      end_date: null,
+      machine: machine.name,
+      machine_id: rentalData.machine_id,
+      company: company.name,
+      company_id: rentalData.company_id,
+      return_condition: null
+    };
+
+    const updatedMachine = await MyMongoClient.newMachineCompany(rentalData.machine_id, rentalData.company_id);
+    if (!updatedMachine) {
+      res.status(500).json({ error: 'Failed to update machine' });
+      return;
+    }
+    const updatedCompany = await MyMongoClient.newCompanyMachine(rentalData.company_id, rentalData.machine_id);
+    if (!updatedCompany) {
+      res.status(500).json({ error: 'Failed to update company' });
+      return;
+    }
+
+    const insertedRental = await MyMongoClient.insertRental(rental);
 
     res.status(201).json(insertedRental);
   } catch (error) {
     console.error('Error inserting rental:', error);
     res.status(500).json({ error: 'Failed to insert rental' });
+  }
+});
+
+app.post("/rental/:id/end", async (req: Request, res: Response) => {
+  try {
+    const id = req.params.id;
+    const returnCondition = req.body.return_condition;
+
+    const updatedRental = await MyMongoClient.endRental(id, returnCondition);
+    if (!updatedRental) {
+      res.status(500).json({ error: 'Failed to update rental' });
+      return;
+    }
+
+    const rental = await MyMongoClient.getRentalById(id);
+    if (!rental) {
+      res.status(404).json({ error: 'Rental not found' });
+      return;
+    }
+
+    const machine = await MyMongoClient.getMachineById(rental.machine_id);
+    if (!machine) {
+      res.status(404).json({ error: 'Machine not found' });
+      return;
+    }
+    machine.company = '';
+
+    const updatedMachine = await MyMongoClient.updateMachine(machine, rental.machine_id);
+    if (!updatedMachine) {
+      res.status(500).json({ error: 'Failed to update machine' });
+      return;
+    }
+    const company = await MyMongoClient.getCompanyById(rental.company_id);
+    if (!company) {
+      res.status(404).json({ error: 'Company not found' });
+      return;
+    }
+    const newMachines = company.machines.filter(machineId => machineId !== rental.machine_id);
+
+    const updatedCompany = await MyMongoClient.updateCompanyMachines(rental.company_id, newMachines);
+
+    const elapsedTime = rental.end_date!.getTime() - rental.start_date.getTime();
+    const elapsedDays = elapsedTime / (1000 * 60 * 60 * 24);
+
+    const transactionAmount = machine.lease * elapsedDays + machine.deposit * (returnCondition ? 0 : 1);
+
+    const transaction: TransactionDTO = {
+      start_date: rental.start_date,
+      end_date: rental.end_date!,
+      amount: -transactionAmount,
+      company_id: company._id || '',
+      type: TransactionType.CASH_OUT
+    };
+
+    const insertedTransaction = await MyMongoClient.insertTransaction(transaction);
+
+
+
+    res.json({ message: 'Rental ended' });
+  } catch (error) {
+    console.error('Error ending rental:', error);
+    res.status(500).json({ error: 'Failed to end rental' });
   }
 });
 
@@ -117,6 +264,21 @@ app.get("/transaction", async (req: Request, res: Response) => {
   }
 }
 );
+
+app.get("/transaction/:company_id", async (req: Request, res: Response) => {
+  try {
+    const company_id = req.params.company_id;
+    const transaction: TransactionDTO[] = await MyMongoClient.getTransactionByCompanyId(company_id);
+    if (!transaction) {
+      res.status(404).json({ error: 'Company not found' });
+      return;
+    }
+    res.json(transaction);
+  } catch (error) {
+    console.error('Error fetching transaction:', error);
+    res.status(500).json({ error: 'Failed to fetch transaction' });
+  }
+});
 
 app.post("/transaction",validateTransactionDTO, async (req: Request, res: Response) => {
   try {

@@ -6,6 +6,7 @@ import { HttpClient } from '@angular/common/http';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { Transaction } from '../../models/transaction.model';
+import { HttpHeaders } from '@angular/common/http';
 
 @Component({
   selector: 'app-details',
@@ -22,6 +23,7 @@ export class DetailsComponent implements OnInit {
   addBalanceMode : boolean = false;
   formData: any = {};
   balanceFormData: any = {};
+  headers = new HttpHeaders().set('Authorization', `Bearer ${localStorage.getItem('token')}`);
 
   startDate: string | undefined;
   endDate: string | undefined;
@@ -77,13 +79,14 @@ export class DetailsComponent implements OnInit {
 
   saveChanges() {
     console.log(this.formData);
-    this.http.put<Company>(`${this.apiUrl}/company/${this.id}`,this.formData)
+    this.http.put<Company>(`${this.apiUrl}/company/${this.id}`,this.formData,{ headers: this.headers })
     .subscribe(
       response => {
         window.location.replace(`/companies`)
       },
       error => {
         console.error('Error:', error);
+        alert("Please log in to edit a company.")
       })
   }
 
@@ -96,7 +99,6 @@ export class DetailsComponent implements OnInit {
 
         const selectedStartDate = new Date(this.startDate || "");
         const selectedEndDate = new Date(this.endDate || "");
-        // Compare dates
         return startDate >= selectedStartDate && endDate <= selectedEndDate;
       });
     }

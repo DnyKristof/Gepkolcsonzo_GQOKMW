@@ -7,6 +7,10 @@ import { MachineDTO, validateMachineDTO } from "./models/MachineDTO";
 import { CompanyDTO,RegisterCompanyDTO,UpdateCompanyDTO,validateRegisterCompanyDTO } from "./models/CompanyDTO";
 import { NewRentalDTO, RentalDTO,validateNewRentalDTO } from "./models/RentalDTO";
 import { TransactionDTO,TransactionType,validateTransactionDTO } from "./models/TransactionDTO";
+import { LoginDTO, validateLoginDTO } from "./models/LoginDTO";
+import { RegisterDTO, validateRegisterDTO } from "./models/RegisterDTO";
+import jwt from 'jsonwebtoken';
+
 
 dotenv.config();
 
@@ -15,7 +19,47 @@ app.use(express.json());
 app.use(cors());
 const port = process.env.PORT;
 const MyMongoClient = new Mongo();
+const jwtSecret : string = process.env.JWT_SECRET || "secret";
 
+function validateToken(req: Request, res: Response, next: NextFunction) {
+  const token = req.get("Authorization")
+  if (!token) {
+    res.status(401).json({ error: 'Unauthorized' });
+    return;
+  }
+  console.log('Token:', token)
+  const toVerify = token.split(' ')[1];
+  const tokenVerified = jwt.verify(toVerify, jwtSecret);
+  next();
+}
+
+app.post("/login",validateLoginDTO, async (req: Request, res: Response) => {
+  try {
+    const loginData: LoginDTO = req.body;
+    console.log('Login:', req.body)
+    const token = await MyMongoClient.Login(loginData);
+    console.log('Token:', token)
+    if (!token) {
+      res.status(401).json({ error: 'Invalid credentials' });
+      return;
+    }
+    res.json({ token });
+  } catch (error) {
+    console.error('Error logging in:', error);
+    res.status(500).json({ error: 'Failed to log in' });
+  }
+});
+
+app.post("/register",validateRegisterDTO, async (req: Request, res: Response) => {
+  try {
+    const registerData: RegisterDTO = req.body;
+    const result = await MyMongoClient.Register(registerData);
+    res.json(result);
+  } catch (error) {
+    console.error('Error registering:', error);
+    res.status(500).json({ error: 'Failed to register' });
+  }
+});
 
 app.get("/machine", async (req: Request, res: Response) => {
   try {
@@ -27,7 +71,7 @@ app.get("/machine", async (req: Request, res: Response) => {
   }
 });
 
-app.post("/machine",validateMachineDTO, async (req: Request, res: Response) => {
+app.post("/machine",validateMachineDTO,validateToken, async (req: Request, res: Response) => {
   try {
     const machineData: MachineDTO = req.body;
 
@@ -66,7 +110,7 @@ app.get("/company/:id", async (req: Request, res: Response) => {
   }
 });
 
-app.post("/company",validateRegisterCompanyDTO, async (req: Request, res: Response) => {
+app.post("/company",validateRegisterCompanyDTO,validateToken, async (req: Request, res: Response) => {
   try {
     const companyData: RegisterCompanyDTO = req.body;
     const startingBalance = 15000;
@@ -100,7 +144,7 @@ app.post("/company",validateRegisterCompanyDTO, async (req: Request, res: Respon
   }
 });
 
-app.put("/company/:id",validateRegisterCompanyDTO, async (req: Request, res: Response) => {
+app.put("/company/:id",validateRegisterCompanyDTO,validateToken, async (req: Request, res: Response) => {
   try {
     const id = req.params.id;
     const companyData: UpdateCompanyDTO = req.body;
@@ -144,7 +188,7 @@ app.get("/rental/:id", async (req: Request, res: Response) => {
   }
 });
 
-app.post("/rental",validateNewRentalDTO, async (req: Request, res: Response) => {
+app.post("/rental",validateNewRentalDTO,validateToken, async (req: Request, res: Response) => {
   try {
     const rentalData: NewRentalDTO = req.body;
     const machine = await MyMongoClient.getMachineById(rentalData.machine_id);
@@ -192,7 +236,7 @@ app.post("/rental",validateNewRentalDTO, async (req: Request, res: Response) => 
   }
 });
 
-app.post("/rental/:id/end", async (req: Request, res: Response) => {
+app.post("/rental/:id/end",validateToken, async (req: Request, res: Response) => {
   try {
     const id = req.params.id;
     const returnCondition = req.body.return_condition;
@@ -280,7 +324,7 @@ app.get("/transaction/:company_id", async (req: Request, res: Response) => {
   }
 });
 
-app.post("/transaction",validateTransactionDTO, async (req: Request, res: Response) => {
+app.post("/transaction",validateTransactionDTO,validateToken, async (req: Request, res: Response) => {
   try {
     const transactionData: TransactionDTO = req.body;
 

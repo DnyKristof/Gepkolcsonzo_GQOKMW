@@ -4,7 +4,9 @@ import { MachineDTO } from './models/MachineDTO';
 import { CompanyDTO, UpdateCompanyDTO } from './models/CompanyDTO';
 import { RentalDTO } from './models/RentalDTO';
 import { TransactionDTO } from './models/TransactionDTO';
-import { get } from 'http';
+import { LoginDTO } from './models/LoginDTO';
+import jwt from 'jsonwebtoken';
+import { RegisterDTO } from './models/RegisterDTO';
 dotenv.config();
 
 export class Mongo {
@@ -12,6 +14,7 @@ export class Mongo {
     private db: Db | undefined;
     private uri: string = process.env.MONGO_URI || 'mongodb://localhost:27017';
     private dbName: string = process.env.MONGO_DB_NAME || 'test';
+    private jwtSecret: string = process.env.JWT_SECRET || "secret"
 
     constructor() {
         this.client = new MongoClient(this.uri);
@@ -29,6 +32,31 @@ export class Mongo {
     private generateIndex(): string {
         const randomNumber = Math.floor(Math.random() * 1000000);
         return randomNumber.toString().padStart(6, '0');
+    }
+
+    private async getUserCollection() {
+        return this.db!.collection('users');
+    }
+
+    async Login(user: LoginDTO): Promise<string | null> {
+        const userCollection = await this.getUserCollection();
+        const userFound = await userCollection.findOne({ username: user.username, password: user.password });
+        if (!userFound) {
+            return null;
+        }
+
+        const token = jwt.sign({ username: user.username,
+            exp: Math.floor(Date.now() / 1000) + (3600 * 3600),
+            user_id: userFound._id
+        }, this.jwtSecret);
+
+        return token;
+    }
+
+    async Register(user: RegisterDTO): Promise<InsertOneResult> {
+        const userCollection = await this.getUserCollection();
+        const result = await userCollection.insertOne(user);
+        return result;
     }
 
     private async getMachineCollection(): Promise<Collection<MachineDTO>> {

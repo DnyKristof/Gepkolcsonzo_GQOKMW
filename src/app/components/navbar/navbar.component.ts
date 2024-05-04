@@ -1,14 +1,22 @@
 import { Component } from '@angular/core';
 import { RouterModule, Routes } from '@angular/router';
+import { CommonModule } from '@angular/common';
 
 
 @Component({
   selector: 'app-navbar',
   standalone: true,
-  imports: [RouterModule],
+  imports: [RouterModule,CommonModule],
   templateUrl: './navbar.component.html',
   styleUrl: './navbar.component.css'
 })
 export class NavbarComponent {
+
+  user: string | null = localStorage.getItem('token');
+
+  Logout() {
+    localStorage.removeItem('token');
+    window.location.href = '/login';
+  }
 
 }

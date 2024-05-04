@@ -1,6 +1,13 @@
 <nav>
     <div class="navbar-container">
+
         <ul class="navbar-menu">
+            <li *ngIf="!user">
+                <button [routerLink]="['/login']">Login</button>
+            </li>
+            <li *ngIf="user">
+                <button (click)="Logout()">Logout</button>
+            </li>
             <li>
                 <button [routerLink]="['/machines']">Machines</button>
             </li>

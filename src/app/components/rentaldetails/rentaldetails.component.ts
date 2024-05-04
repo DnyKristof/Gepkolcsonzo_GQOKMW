@@ -5,6 +5,7 @@ import { RouterModule } from '@angular/router';
 import { env } from '../../../env';
 import { Rental } from '../../models/rental.model';
 import { ActivatedRoute } from '@angular/router';
+import { HttpHeaders } from '@angular/common/http';
 
 
 @Component({
@@ -19,6 +20,8 @@ export class RentaldetailsComponent {
   rental: any = null;
   id: string = "";
   endMode : boolean = false;
+  headers = new HttpHeaders().set('Authorization', `Bearer ${localStorage.getItem('token')}`);
+
   constructor(private http: HttpClient,private route: ActivatedRoute) { }
 
   ngOnInit(): void {
@@ -40,7 +43,7 @@ export class RentaldetailsComponent {
   }
   
   endRental(returnCondition: boolean) {
-    this.http.post<any>(`${this.apiUrl}/rental/${this.id}/end`,{return_condition: returnCondition})
+    this.http.post<any>(`${this.apiUrl}/rental/${this.id}/end`,{return_condition: returnCondition},{headers: this.headers})
     .subscribe(
       response => {
         window.location.replace(`/rentals`)

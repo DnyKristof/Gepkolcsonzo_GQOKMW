@@ -3,6 +3,7 @@ import { CommonModule } from '@angular/common';
 import { HttpClient } from '@angular/common/http';
 import { RouterModule } from '@angular/router';
 import { env } from '../../../env';
+import { HttpHeaders } from '@angular/common/http';
 
 @Component({
   selector: 'app-addpage',
@@ -19,6 +20,7 @@ export class AddpageComponent {
   private apiUrl = env.apiUrl;
   route = ''
   api = ""
+  headers = new HttpHeaders().set('Authorization', `Bearer ${localStorage.getItem('token')}`);
 
 
   companyFields: InputField[] = [
@@ -82,7 +84,7 @@ export class AddpageComponent {
       this.formData[field.name] = (document.getElementById(field.id) as HTMLInputElement).value;
     });
 
-    this.http.post(`${this.apiUrl}/${this.api}`, this.formData)
+    this.http.post(`${this.apiUrl}/${this.api}`, this.formData, { headers: this.headers })
       .subscribe(
         response => {
           window.location.replace(`/${this.route}`)
@@ -90,6 +92,7 @@ export class AddpageComponent {
         },
         error => {
           console.error('Error:', error);
+          alert("Please log in to add a new item.")
         }
       );
       

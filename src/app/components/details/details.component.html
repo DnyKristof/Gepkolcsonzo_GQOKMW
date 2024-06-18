@@ -43,6 +43,9 @@
       </div>
 
       <div *ngIf="this.filteredTransactions">
+        <div>
+          <canvas #myChart id="MyChart" >{{ chart }}</canvas>
+        </div>
         <h2>Transactions:</h2>
         <ul>
             <li *ngFor="let transacion of this.filteredTransactions">
@@ -50,6 +53,8 @@
             </li>
         </ul>
     </div>
+    
+
     
   </div>
 </div>

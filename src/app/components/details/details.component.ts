@@ -7,6 +7,7 @@ import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { Transaction } from '../../models/transaction.model';
 import { HttpHeaders } from '@angular/common/http';
+import { Chart } from 'chart.js/auto';
 
 @Component({
   selector: 'app-details',
@@ -23,6 +24,8 @@ export class DetailsComponent implements OnInit {
   addBalanceMode : boolean = false;
   formData: any = {};
   balanceFormData: any = {};
+
+  chart: any = null;
   headers = new HttpHeaders().set('Authorization', `Bearer ${localStorage.getItem('token')}`);
 
   startDate: string | undefined;
@@ -31,7 +34,7 @@ export class DetailsComponent implements OnInit {
 
   constructor(private route: ActivatedRoute,private http: HttpClient) { }
 
-  transactions: Transaction[] | undefined = [];
+  transactions: Transaction[] | undefined= [];
   
 
   ngOnInit(): void {
@@ -39,6 +42,11 @@ export class DetailsComponent implements OnInit {
       this.id = params.get('id') || "";
     });
     this.fetchDetails();
+    
+  }
+
+  ngAfterViewInit(): void {
+    
   }
 
   toggleEditMode(): void {
@@ -49,6 +57,7 @@ export class DetailsComponent implements OnInit {
   }
 
   addBalance() {
+    console.log(this.transactions)
     this.balanceFormData.amount = parseFloat(this.balanceFormData.amount);
     this.balanceFormData.start_date = new Date();
     this.balanceFormData.end_date = new Date();
@@ -64,6 +73,31 @@ export class DetailsComponent implements OnInit {
       })
   }
 
+  createChart(){
+
+    if (this.transactions && this.transactions.length > 0) {
+      this.chart = new Chart("MyChart", {
+        type: 'line', 
+    
+        data: {
+          labels: this.transactions.map(transaction => transaction.start_date?.toString()), 
+             datasets: [
+            {
+              label: "Cash Flow",
+              data: this.transactions.map(transaction => transaction.amount),
+              backgroundColor: 'blue'
+            },
+          ]
+        },
+        options: {
+          aspectRatio:10
+        }
+        
+      });
+    }
+  }
+
+
 
   fetchDetails() {
     this.http.get<Company>(`${this.apiUrl}/company/${this.id}`)
@@ -74,6 +108,7 @@ export class DetailsComponent implements OnInit {
     .subscribe(data => {
       this.transactions = data;
       this.filteredTransactions = data;
+      this.createChart();
     });
   }
 
